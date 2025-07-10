@@ -26,6 +26,7 @@ mdurl==0.1.2
 multidict==6.6.3
 orjson==3.10.18
 propcache==0.3.2
+psycopg2-binary==2.9.10
 pydantic==2.11.7
 pydantic-extra-types==2.10.5
 pydantic-settings==2.10.1
