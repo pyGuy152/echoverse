@@ -34,3 +34,4 @@ def sqlQuery(sql: str, params: tuple, fetch: int = 0):
     conn.commit()
     conn.close()
     return out
+
