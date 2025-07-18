@@ -1,6 +1,6 @@
-import discord, os
-from dotenv import load_dotenv
-from utils.llm import askAI
+import discord, os # type: ignore
+from discord.ext import commands
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -10,13 +10,43 @@ intents.message_content = True
 intents.members = True
 intents.presences = True
 
-bot = discord.Client(intents=intents)
-tree = discord.app_commands.CommandTree(bot)
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+async def load_cogs():
+    """
+    Loads all cogs from the 'cogs' directory.
+    """
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            cog_name = filename[:-3]
+            if cog_name == "__init__":
+                continue
+            try:
+                await bot.load_extension(f"cogs.{cog_name}")
+                print(f"Loaded cog: {cog_name}")
+            except Exception as e:
+                print(f"Failed to load cog {cog_name}: {e}")
+
+async def unload_cogs():
+    """
+    Unloads all currently loaded cogs.
+    """
+    for cog_name in list(bot.extensions.keys()):
+        try:
+            await bot.unload_extension(cog_name)
+            print(f"Unloaded cog: {cog_name}")
+        except Exception as e:
+            print(f"Failed to unload cog {cog_name}: {e}")
+
+
+
 
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
-    await tree.sync()
+    await load_cogs()
+    await bot.tree.sync()
+    print("Bot is ready")
 
 @bot.event
 async def on_message(message):
@@ -24,28 +54,8 @@ async def on_message(message):
         return
     return
 
-@tree.command(name="ping", description="Test the bot's responsiveness.")
-async def ping_slash(interaction: discord.Interaction):
-    await interaction.response.send_message("Pong!", ephemeral=True)
-
-@tree.command(name="create_world", description="Create a world for the server!!!")
-async def ping_slash(interaction: discord.Interaction, world_name:str, genre:str , description: str = ""):
-    creator = str(interaction.user.display_name)
-    guild_name = str(interaction.guild.name)
-    guild_description = str(interaction.guild.description)
-    world_description = askAI(f'''You're helping write a short, casual, and creative description for a world in a Discord server. The world doesnt always have to be fantasy use the genre given.
-
-The tone should feel friendly and imaginative — something you'd hear from a person setting up a cool story or RP world for friends. Keep it simple, easy to read, and fun. Avoid sounding like an AI or using complex words or dramatic clichés.
-
-Here’s the info to base it on:
-- World Name: {world_name}
-- Genre: {genre}
-- Any extra ideas (optional): {description}
-- Server name: {guild_name}
-- Server description (you can lightly reference it): {guild_description}
-
-The final result should be 5–6 sentences max, and sound natural. Don’t include titles, intros, or lists — just the description. Just describe the world btw dont invite ppl and stuff. USE 3RD PERSON POV.
-''')
-    await interaction.response.send_message(f"{interaction.user.mention} made a new world named {world_name} with a genre of {genre}. Inital description - \n\n{world_description}")
+# @tree.command(name="ping", description="Test the bot's responsiveness.")
+# async def ping_slash(interaction: discord.Interaction):
+#     await interaction.response.send_message("Pong!", ephemeral=True)
 
 bot.run(TOKEN)
