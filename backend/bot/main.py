@@ -1,6 +1,7 @@
 import discord, os # type: ignore
 from discord.ext import commands # type: ignore
 from dotenv import load_dotenv # type: ignore
+from ..database.schemas import setup_tables
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -44,6 +45,8 @@ async def unload_cogs():
 @bot.event
 async def on_ready():
     print(f'{bot.user} has connected to Discord!')
+    setup_tables()
+    print("DB set up")
     await load_cogs()
     await bot.tree.sync()
     print("Bot is ready")

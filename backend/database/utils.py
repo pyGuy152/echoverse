@@ -1,7 +1,7 @@
-import psycopg2, os, time
-from psycopg2 import Error
-from psycopg2.extras import RealDictCursor 
-from dotenv import load_dotenv
+import psycopg2, os, time # type: ignore
+from psycopg2 import Error # type: ignore
+from psycopg2.extras import RealDictCursor # type: ignore
+from dotenv import load_dotenv # type: ignore
 
 load_dotenv()
 db_user = os.getenv("DB_User")

@@ -14,9 +14,12 @@ class WorldCommands(commands.Cog):
     @app_commands.describe(
         world_name="The name of your new world",
         world_genre="The genre of the world",
-        world_description="Something to base your world off of"
+        world_inspiration="Something to base your world off of"
     )
-    async def create_world(self, interaction: discord.Interaction, world_name:str, world_genre:str , world_description: str = ""):
+    @app_commands.checks.has_permissions(
+        administrator=True
+    )
+    async def create_world(self, interaction: discord.Interaction, world_name:str, world_genre:str , world_inspiration: str = ""):
         creator = str(interaction.user.display_name)
         guild_name = str(interaction.guild.name)
         guild_description = str(interaction.guild.description)
@@ -27,7 +30,7 @@ class WorldCommands(commands.Cog):
     Here's the info to base it on:
     - World Name: {world_name}
     - Genre: {world_genre}
-    - Any extra ideas (optional): {world_description}
+    - Any extra ideas (optional): {world_inspiration}
     - Server name: {guild_name}
     - Server description (you can lightly reference it): {guild_description}
 
