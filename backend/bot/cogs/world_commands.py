@@ -1,5 +1,5 @@
 import discord # type: ignore
-from utils.llm import askAI
+from ..utils.llm import askAI
 from discord.ext import commands # type: ignore
 from discord import app_commands # type: ignore
 

@@ -7,7 +7,7 @@ load_dotenv()
 db_user = os.getenv("DB_User")
 db_pass = os.getenv("DB_User_PASS")
 
-def sqlQuery(sql: str, params: tuple, fetch: int = 0):
+def sqlQuery(sql: str, params: tuple = (), fetch: int = 0):
     while True:
         try:
             conn = psycopg2.connect(database='echoverse',user=db_user,password=db_pass,host='localhost',port='5432',cursor_factory=RealDictCursor)
